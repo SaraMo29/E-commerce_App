@@ -1,10 +1,12 @@
-import 'package:e_commerce/core/services/service_locator.dart';
+import 'package:e_commerce/features/products/presentation/widgets/offer_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/responsive/responsive_context.dart';
+import 'package:e_commerce/features/products/presentation/views/offer_screen.dart';
+
 import '../view_models/products_cubit.dart';
 import '../view_models/products_state.dart';
 import '../widgets/products_grid.dart';
@@ -53,23 +55,49 @@ class _ProductsScreen extends StatelessWidget {
                           ),
                           SizedBox(width: context.spacing.md),
                           IconButton(
-                            icon: const Icon(Icons.favorite_border,
-                                color: AppColors.textSecondary),
+                            icon: const Icon(
+                              Icons.favorite_border,
+                              color: AppColors.textSecondary,
+                            ),
                             onPressed: () {},
                           ),
                           IconButton(
-                            icon: const Icon(Icons.notifications_none,
-                                color: AppColors.textSecondary),
+                            icon: const Icon(
+                              Icons.notifications_none,
+                              color: AppColors.textSecondary,
+                            ),
                             onPressed: () {},
                           ),
                         ],
                       ),
                     ),
 
+                    // Offer Banner
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.spacing.md,
+                      ),
+                      child: OfferBanner(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const OfferScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    SizedBox(height: context.spacing.md),
+
                     // Categories Section
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: context.responsive(mobile: 16.0, tablet: 40.0),
+                        horizontal: context.responsive(
+                          mobile: 16.0,
+                          tablet: 40.0,
+                        ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,8 +106,9 @@ class _ProductsScreen extends StatelessWidget {
                           Flexible(
                             child: Text(
                               'More Category',
-                              style: context.textStyles.heading4
-                                  .copyWith(color: AppColors.primary),
+                              style: context.textStyles.heading4.copyWith(
+                                color: AppColors.primary,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -87,25 +116,39 @@ class _ProductsScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+
                     SizedBox(height: context.spacing.md),
 
+                    // Categories List
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: context.spacing.md),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.spacing.md,
+                      ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CategoryItem(icon: Icons.checkroom, title: 'Shirt'),
-                          SizedBox(width: context.spacing.md),
-                          const CategoryItem(icon: Icons.work_outline, title: 'Bag'),
+                          const CategoryItem(
+                            icon: Icons.checkroom,
+                            title: 'Shirt',
+                          ),
                           SizedBox(width: context.spacing.md),
                           const CategoryItem(
-                              icon: Icons.computer, title: 'Equipment'),
+                            icon: Icons.work_outline,
+                            title: 'Bag',
+                          ),
+                          SizedBox(width: context.spacing.md),
+                          const CategoryItem(
+                            icon: Icons.computer,
+                            title: 'Equipment',
+                          ),
                           SizedBox(width: context.spacing.md),
                           const CategoryItem(icon: Icons.watch, title: 'Watch'),
                           SizedBox(width: context.spacing.md),
                           const CategoryItem(
-                              icon: Icons.diamond, title: 'Jewelry'),
+                            icon: Icons.diamond,
+                            title: 'Jewelry',
+                          ),
                         ],
                       ),
                     ),
@@ -119,12 +162,16 @@ class _ProductsScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Flash Sale', style: context.textStyles.heading4),
+                          Text(
+                            'Flash Sale',
+                            style: context.textStyles.heading4,
+                          ),
                           Flexible(
                             child: Text(
                               'See More',
-                              style: context.textStyles.heading4
-                                  .copyWith(color: AppColors.primary),
+                              style: context.textStyles.heading4.copyWith(
+                                color: AppColors.primary,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -140,23 +187,22 @@ class _ProductsScreen extends StatelessWidget {
               BlocBuilder<ProductsCubit, ProductsState>(
                 builder: (context, state) {
                   return switch (state) {
-                    ProductsSuccess(:final products) =>
-                      ProductsGrid(products: products),
+                    ProductsSuccess(:final products) => ProductsGrid(
+                      products: products,
+                    ),
                     ProductsEmpty() => const ProductsEmptySliver(),
                     ProductsError(:final message) => ProductsErrorSliver(
-                        message: message,
-                        onRetry: () =>
-                            context.read<ProductsCubit>().loadProducts(),
-                      ),
-                    ProductsLoading() || ProductsInitial() =>
-                      const ProductsLoadingSliver(),
+                      message: message,
+                      onRetry: () =>
+                          context.read<ProductsCubit>().loadProducts(),
+                    ),
+                    ProductsLoading() ||
+                    ProductsInitial() => const ProductsLoadingSliver(),
                   };
                 },
               ),
 
-              SliverToBoxAdapter(
-                child: SizedBox(height: context.spacing.xxl),
-              ),
+              SliverToBoxAdapter(child: SizedBox(height: context.spacing.xxl)),
             ],
           ),
         ),
