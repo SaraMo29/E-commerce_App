@@ -1,13 +1,20 @@
+
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/responsive/responsive_context.dart';
 import '../../data/models/product_model.dart';
 
+
 class ProductCard extends StatelessWidget {
   final ProductModel product;
+  final void Function(ProductModel product)? onDelete;
 
-  const ProductCard({super.key, required this.product});
+  const ProductCard({
+    super.key,
+    required this.product,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +47,11 @@ class ProductCard extends StatelessWidget {
           SizedBox(height: context.spacing.xs),
           Row(
             children: [
-              const Icon(Icons.star, color: AppColors.star, size: 14),
+              const Icon(
+                Icons.star,
+                color: AppColors.star,
+                size: 14,
+              ),
               SizedBox(width: context.spacing.xs),
               Text(
                 product.rating.toStringAsFixed(1),
@@ -62,31 +73,53 @@ class ProductCard extends StatelessWidget {
             style: context.textStyles.price,
           ),
           SizedBox(height: context.spacing.xs),
-          if (product.hasDiscount)
-            Row(
-              children: [
-                Text(
-                  '\$${product.price.toStringAsFixed(2)}',
-                  style: context.textStyles.oldPrice,
-                ),
+
+         
+          Row(
+            children: [
+              Expanded(
+                child: product.hasDiscount
+                    ? Row(
+                        children: [
+                          Text(
+                            '\$${product.price.toStringAsFixed(2)}',
+                            style: context.textStyles.oldPrice,
+                          ),
+                          SizedBox(width: context.spacing.xs),
+                          Flexible(
+                            child: Text(
+                              '${product.discountPercentage.toStringAsFixed(0)}% Off',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.textStyles.discount,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text(
+                        product.brand ?? product.category,
+                        style: context.textStyles.caption,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+              ),
+
+              if (onDelete != null) ...[
                 SizedBox(width: context.spacing.xs),
-                Flexible(
-                  child: Text(
-                    '${product.discountPercentage.toStringAsFixed(0)}% Off',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.textStyles.discount,
+                IconButton(
+                  onPressed: () => onDelete!(product),
+                  icon: const Icon(Icons.delete_outline),
+                  color: AppColors.discount,
+                  tooltip: 'Remove from favorites',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
                   ),
                 ),
               ],
-            )
-          else
-            Text(
-              product.brand ?? product.category,
-              style: context.textStyles.caption,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            ],
+          ),
         ],
       ),
     );
@@ -94,14 +127,16 @@ class ProductCard extends StatelessWidget {
 }
 
 class _ProductImage extends StatelessWidget {
-  //todo: replace with cash network img
+  // TODO: Replace with cached network image.
   final String? url;
 
   const _ProductImage({this.url});
 
   @override
   Widget build(BuildContext context) {
-    if (url == null || url!.isEmpty) return const _ImagePlaceholder();
+    if (url == null || url!.isEmpty) {
+      return const _ImagePlaceholder();
+    }
 
     return Image.network(
       url!,
@@ -109,9 +144,12 @@ class _ProductImage extends StatelessWidget {
       fit: BoxFit.cover,
       loadingBuilder: (context, child, progress) {
         if (progress == null) return child;
+
         return const _ImagePlaceholder(showLoader: true);
       },
-      errorBuilder: (context, error, stackTrace) => const _ImagePlaceholder(),
+      errorBuilder: (context, error, stackTrace) {
+        return const _ImagePlaceholder();
+      },
     );
   }
 }
@@ -131,9 +169,15 @@ class _ImagePlaceholder extends StatelessWidget {
             ? const SizedBox(
                 width: 22,
                 height: 22,
-                child: CircularProgressIndicator(strokeWidth: 2.5),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                ),
               )
-            : const Icon(Icons.image, size: 50, color: AppColors.border),
+            : const Icon(
+                Icons.image,
+                size: 50,
+                color: AppColors.border,
+              ),
       ),
     );
   }
