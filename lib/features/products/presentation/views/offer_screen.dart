@@ -1,6 +1,5 @@
 import 'package:e_commerce/features/products/presentation/widgets/offer_banner.dart';
 import 'package:flutter/material.dart';
-
 import 'package:e_commerce/core/responsive/responsive_context.dart';
 import 'package:e_commerce/features/products/presentation/widgets/app_bar_action.dart';
 import 'package:e_commerce/features/products/presentation/widgets/custom_app_bar.dart';

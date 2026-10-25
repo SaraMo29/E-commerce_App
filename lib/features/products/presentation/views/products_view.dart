@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/responsive/responsive_context.dart';
+
+import 'package:e_commerce/features/products/presentation/views/favorite_screen.dart';
 import 'package:e_commerce/features/products/presentation/views/offer_screen.dart';
 
 import '../view_models/products_cubit.dart';
@@ -54,13 +56,23 @@ class _ProductsScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: context.spacing.md),
+
+                          // Favorite Button
                           IconButton(
                             icon: const Icon(
                               Icons.favorite_border,
                               color: AppColors.textSecondary,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const FavoriteScreen(),
+                                ),
+                              );
+                            },
                           ),
+
                           IconButton(
                             icon: const Icon(
                               Icons.notifications_none,
@@ -102,7 +114,10 @@ class _ProductsScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Category', style: context.textStyles.heading4),
+                          Text(
+                            'Category',
+                            style: context.textStyles.heading4,
+                          ),
                           Flexible(
                             child: Text(
                               'More Category',
@@ -143,7 +158,10 @@ class _ProductsScreen extends StatelessWidget {
                             title: 'Equipment',
                           ),
                           SizedBox(width: context.spacing.md),
-                          const CategoryItem(icon: Icons.watch, title: 'Watch'),
+                          const CategoryItem(
+                            icon: Icons.watch,
+                            title: 'Watch',
+                          ),
                           SizedBox(width: context.spacing.md),
                           const CategoryItem(
                             icon: Icons.diamond,
@@ -183,7 +201,7 @@ class _ProductsScreen extends StatelessWidget {
                 ),
               ),
 
-              // Product grid reflects the cubit state machine.
+              // Products Grid
               BlocBuilder<ProductsCubit, ProductsState>(
                 builder: (context, state) {
                   return switch (state) {
@@ -202,7 +220,9 @@ class _ProductsScreen extends StatelessWidget {
                 },
               ),
 
-              SliverToBoxAdapter(child: SizedBox(height: context.spacing.xxl)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: context.spacing.xxl),
+              ),
             ],
           ),
         ),
