@@ -13,4 +13,8 @@ class ProductsRepositoryImpl implements ProductsRepository {
   Future<List<ProductModel>> getProducts({int limit = 30, int skip = 0}) {
     return _datasource.fetchProducts(limit: limit, skip: skip);
   }
+  @override
+Future<ProductModel> getProductById(int id) {
+  return _datasource.fetchProductById(id);
+}
 }

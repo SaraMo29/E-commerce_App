@@ -1,3 +1,4 @@
+
 import 'package:e_commerce/features/products/presentation/widgets/offer_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/responsive/responsive_context.dart';
+import 'product_details_screen.dart';
 
 import 'package:e_commerce/features/products/presentation/views/favorite_screen.dart';
 import 'package:e_commerce/features/products/presentation/views/offer_screen.dart';
@@ -20,10 +22,7 @@ class ProductsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ProductsCubit()..loadProducts(),
-      child: const _ProductsScreen(),
-    );
+    return const _ProductsScreen();
   }
 }
 
@@ -114,10 +113,7 @@ class _ProductsScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Category',
-                            style: context.textStyles.heading4,
-                          ),
+                          Text('Category', style: context.textStyles.heading4),
                           Flexible(
                             child: Text(
                               'More Category',
@@ -158,10 +154,7 @@ class _ProductsScreen extends StatelessWidget {
                             title: 'Equipment',
                           ),
                           SizedBox(width: context.spacing.md),
-                          const CategoryItem(
-                            icon: Icons.watch,
-                            title: 'Watch',
-                          ),
+                          const CategoryItem(icon: Icons.watch, title: 'Watch'),
                           SizedBox(width: context.spacing.md),
                           const CategoryItem(
                             icon: Icons.diamond,
@@ -207,6 +200,15 @@ class _ProductsScreen extends StatelessWidget {
                   return switch (state) {
                     ProductsSuccess(:final products) => ProductsGrid(
                       products: products,
+                      onTap: (product) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ProductDetailsScreen(productId: product.id),
+                          ),
+                        );
+                      },
                     ),
                     ProductsEmpty() => const ProductsEmptySliver(),
                     ProductsError(:final message) => ProductsErrorSliver(
@@ -220,9 +222,7 @@ class _ProductsScreen extends StatelessWidget {
                 },
               ),
 
-              SliverToBoxAdapter(
-                child: SizedBox(height: context.spacing.xxl),
-              ),
+              SliverToBoxAdapter(child: SizedBox(height: context.spacing.xxl)),
             ],
           ),
         ),

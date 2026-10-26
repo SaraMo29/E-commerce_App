@@ -13,11 +13,13 @@ import 'product_card.dart';
 class ProductsGrid extends StatelessWidget {
   final List<ProductModel> products;
   final void Function(ProductModel product)? onDelete;
+  final void Function(ProductModel product)? onTap;
 
   const ProductsGrid({
     super.key,
     required this.products,
     this.onDelete,
+    this.onTap,
   });
 
   @override
@@ -45,6 +47,7 @@ class ProductsGrid extends StatelessWidget {
           (context, index) => ProductCard(
             product: products[index],
             onDelete: onDelete,
+            onTap: onTap == null ? null : () => onTap!(products[index]),
           ),
           childCount: products.length,
         ),

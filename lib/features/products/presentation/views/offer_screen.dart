@@ -1,3 +1,4 @@
+
 import 'package:e_commerce/features/products/presentation/widgets/offer_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/core/responsive/responsive_context.dart';
@@ -9,15 +10,14 @@ import 'package:e_commerce/features/products/presentation/widgets/products_grid.
 import 'package:e_commerce/features/products/presentation/widgets/products_status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'product_details_screen.dart';
+
 class OfferScreen extends StatelessWidget {
   const OfferScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ProductsCubit()..loadProducts(limit: 0),
-      child: const _OfferScreenContent(),
-    );
+    return const _OfferScreenContent();
   }
 }
 
@@ -56,7 +56,18 @@ class _OfferScreenContent extends StatelessWidget {
                       return const ProductsEmptySliver();
                     }
 
-                    return ProductsGrid(products: discountedProducts);
+                    return ProductsGrid(
+                      products: discountedProducts,
+                      onTap: (product) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ProductDetailsScreen(productId: product.id),
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
 
@@ -65,7 +76,7 @@ class _OfferScreenContent extends StatelessWidget {
                 ProductsError(:final message) => ProductsErrorSliver(
                   message: message,
                   onRetry: () =>
-                      context.read<ProductsCubit>().loadProducts(limit: 0),
+                      context.read<ProductsCubit>().loadProducts(),
                 ),
 
                 ProductsLoading() ||
