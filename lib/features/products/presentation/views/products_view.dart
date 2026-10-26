@@ -1,3 +1,4 @@
+
 import 'package:e_commerce/features/products/presentation/widgets/offer_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/responsive/responsive_context.dart';
+import 'product_details_screen.dart';
+
+import 'package:e_commerce/features/products/presentation/views/favorite_screen.dart';
 import 'package:e_commerce/features/products/presentation/views/offer_screen.dart';
 
 import '../view_models/products_cubit.dart';
@@ -18,10 +22,7 @@ class ProductsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ProductsCubit()..loadProducts(),
-      child: const _ProductsScreen(),
-    );
+    return const _ProductsScreen();
   }
 }
 
@@ -54,13 +55,23 @@ class _ProductsScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: context.spacing.md),
+
+                          // Favorite Button
                           IconButton(
                             icon: const Icon(
                               Icons.favorite_border,
                               color: AppColors.textSecondary,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const FavoriteScreen(),
+                                ),
+                              );
+                            },
                           ),
+
                           IconButton(
                             icon: const Icon(
                               Icons.notifications_none,
@@ -183,12 +194,21 @@ class _ProductsScreen extends StatelessWidget {
                 ),
               ),
 
-              // Product grid reflects the cubit state machine.
+              // Products Grid
               BlocBuilder<ProductsCubit, ProductsState>(
                 builder: (context, state) {
                   return switch (state) {
                     ProductsSuccess(:final products) => ProductsGrid(
                       products: products,
+                      onTap: (product) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ProductDetailsScreen(productId: product.id),
+                          ),
+                        );
+                      },
                     ),
                     ProductsEmpty() => const ProductsEmptySliver(),
                     ProductsError(:final message) => ProductsErrorSliver(

@@ -1,5 +1,4 @@
 import 'package:e_commerce/core/services/service_locator.dart';
-
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/api_exceptions.dart';
 import '../../../../core/network/dio_client.dart';
@@ -50,4 +49,28 @@ class ProductsApiDatasource {
         .map((e) => ProductModel.fromJson(Map<String, dynamic>.from(e)))
         .toList();
   }
+
+  
+Future<ProductModel> fetchProductById(int id) async {
+  final response = await _dioClient.get(
+    ApiEndpoints.productDetails(id),
+  );
+
+  final data = response.data;
+
+  if (data is Map<String, dynamic>) {
+    return ProductModel.fromJson(data);
+  }
+
+  if (data is Map) {
+    return ProductModel.fromJson(
+      Map<String, dynamic>.from(data),
+    );
+  }
+
+  throw const ApiException(
+    message: 'Unexpected response format.',
+  );
+}
+
 }
