@@ -1,4 +1,4 @@
-
+import 'package:e_commerce/core/widgets/cash_img.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -136,51 +136,11 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (url == null || url!.isEmpty) {
-      return const _ImagePlaceholder();
-    }
-
-    return Image.network(
-      url!,
+    return AppNetworkImage(
+      url: url,
       width: double.infinity,
+      height: double.infinity,
       fit: BoxFit.cover,
-      loadingBuilder: (context, child, progress) {
-        if (progress == null) return child;
-
-        return const _ImagePlaceholder(showLoader: true);
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return const _ImagePlaceholder();
-      },
-    );
-  }
-}
-
-class _ImagePlaceholder extends StatelessWidget {
-  final bool showLoader;
-
-  const _ImagePlaceholder({this.showLoader = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: AppColors.surface,
-      child: Center(
-        child: showLoader
-            ? const SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                ),
-              )
-            : const Icon(
-                Icons.image,
-                size: 50,
-                color: AppColors.border,
-              ),
-      ),
     );
   }
 }

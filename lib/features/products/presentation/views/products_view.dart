@@ -1,15 +1,11 @@
-
 import 'package:e_commerce/features/products/presentation/widgets/offer_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/responsive/responsive_context.dart';
-import 'product_details_screen.dart';
-
-import 'package:e_commerce/features/products/presentation/views/favorite_screen.dart';
-import 'package:e_commerce/features/products/presentation/views/offer_screen.dart';
 
 import '../view_models/products_cubit.dart';
 import '../view_models/products_state.dart';
@@ -63,12 +59,7 @@ class _ProductsScreen extends StatelessWidget {
                               color: AppColors.textSecondary,
                             ),
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const FavoriteScreen(),
-                                ),
-                              );
+                              context.pushNamed('favorites');
                             },
                           ),
 
@@ -90,12 +81,7 @@ class _ProductsScreen extends StatelessWidget {
                       ),
                       child: OfferBanner(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const OfferScreen(),
-                            ),
-                          );
+                          context.goNamed('offer');
                         },
                       ),
                     ),
@@ -201,12 +187,9 @@ class _ProductsScreen extends StatelessWidget {
                     ProductsSuccess(:final products) => ProductsGrid(
                       products: products,
                       onTap: (product) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ProductDetailsScreen(productId: product.id),
-                          ),
+                        context.pushNamed(
+                          'productDetails',
+                          pathParameters: {'id': product.id.toString()},
                         );
                       },
                     ),

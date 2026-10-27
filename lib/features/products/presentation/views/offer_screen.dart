@@ -1,4 +1,3 @@
-
 import 'package:e_commerce/features/products/presentation/widgets/offer_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/core/responsive/responsive_context.dart';
@@ -9,8 +8,7 @@ import 'package:e_commerce/features/products/presentation/view_models/products_s
 import 'package:e_commerce/features/products/presentation/widgets/products_grid.dart';
 import 'package:e_commerce/features/products/presentation/widgets/products_status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'product_details_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class OfferScreen extends StatelessWidget {
   const OfferScreen({super.key});
@@ -31,6 +29,7 @@ class _OfferScreenContent extends StatelessWidget {
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(
           title: 'Super Flash Sale',
+          showBackButton: false,
           actions: [AppBarAction(icon: Icons.search, onPressed: () {})],
         ),
       ),
@@ -59,12 +58,9 @@ class _OfferScreenContent extends StatelessWidget {
                     return ProductsGrid(
                       products: discountedProducts,
                       onTap: (product) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ProductDetailsScreen(productId: product.id),
-                          ),
+                        context.pushNamed(
+                          'productDetails',
+                          pathParameters: {'id': product.id.toString()},
                         );
                       },
                     );
@@ -75,8 +71,7 @@ class _OfferScreenContent extends StatelessWidget {
 
                 ProductsError(:final message) => ProductsErrorSliver(
                   message: message,
-                  onRetry: () =>
-                      context.read<ProductsCubit>().loadProducts(),
+                  onRetry: () => context.read<ProductsCubit>().loadProducts(),
                 ),
 
                 ProductsLoading() ||
