@@ -4,8 +4,7 @@ import 'package:e_commerce/features/products/presentation/widgets/custom_app_bar
 import 'package:e_commerce/features/products/presentation/widgets/products_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'product_details_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
@@ -31,12 +30,9 @@ class FavoriteScreen extends StatelessWidget {
                     context.read<FavoriteCubit>().removeFavorite(product);
                   },
                   onTap: (product) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            ProductDetailsScreen(productId: product.id),
-                      ),
+                    context.pushNamed(
+                      'productDetails',
+                      pathParameters: {'id': product.id.toString()},
                     );
                   },
                 ),

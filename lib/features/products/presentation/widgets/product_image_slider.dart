@@ -1,9 +1,8 @@
-
 import 'package:e_commerce/core/responsive/responsive_context.dart';
 import 'package:e_commerce/core/theme/app_colors.dart';
 import 'package:e_commerce/core/theme/app_spacing.dart';
+import 'package:e_commerce/core/widgets/cash_img.dart';
 import 'package:flutter/material.dart';
-
 
 class ProductImageSlider extends StatefulWidget {
   final List<String> images;
@@ -60,15 +59,11 @@ class _ProductImageSliderState extends State<ProductImageSlider> {
             itemBuilder: (context, index) {
               return Container(
                 color: AppColors.surface,
-                child: Image.network(
-                  images[index],
+                child: AppNetworkImage(
+                  url: images[index],
+                  width: double.infinity,
+                  height: double.infinity,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
-                      Icons.image_not_supported_outlined,
-                      size: 60,
-                    );
-                  },
                 ),
               );
             },
