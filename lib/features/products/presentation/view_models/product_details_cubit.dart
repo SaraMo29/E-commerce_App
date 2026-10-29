@@ -9,7 +9,7 @@ import 'product_details_state.dart';
 class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   ProductDetailsCubit() : super(const ProductDetailsInitial());
 
-  get _repository => getIt<ProductsRepository>();
+  ProductsRepository get _repository => getIt<ProductsRepository>();
 
   Future<void> loadProduct(int id) async {
     emit(const ProductDetailsLoading());

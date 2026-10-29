@@ -12,12 +12,16 @@ import 'package:e_commerce/features/products/presentation/views/products_view.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/responsive/responsive_context.dart';
 import 'core/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+   await Hive.initFlutter();
 
   // Register Dio, DioClient, token storage and all services.
   await configureDependencies();
