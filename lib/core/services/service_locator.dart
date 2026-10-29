@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +7,7 @@ import '../../features/auth/data/datasource/loginservice.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/products/data/datasources/products_api_datasource.dart';
+import '../../features/products/data/datasources/reviews_local_datasource.dart';
 import '../../features/products/data/repositories/products_repository.dart';
 import '../../features/products/data/repositories/products_repository_impl.dart';
 import '../network/api_endpoints.dart';
@@ -13,24 +15,25 @@ import '../network/dio_client.dart';
 import '../network/token_storage.dart';
 
 /// Global service locator instance.
-///  pattern singleton ===== dioclent // login//
 final getIt = GetIt.instance;
 
 /// Registers the network stack and feature services.
 ///
-/// Call once from `main()` after `WidgetsFlutterBinding.ensureInitialized()`.
+/// Call once from main() after WidgetsFlutterBinding.ensureInitialized().
 Future<void> configureDependencies() async {
-  // --- Core / infrastructure ---------------------------------------------
-
+  // Core: SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
+
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);
 
-  // Persistent local token cache (survives app restarts).
+  // Local token storage
   getIt.registerLazySingleton<TokenStorage>(
-    () => SharedPrefsTokenStorage(getIt<SharedPreferences>()),
+    () => SharedPrefsTokenStorage(
+      getIt<SharedPreferences>(),
+    ),
   );
 
-  // Base Dio, shared so interceptors/options are configured in one place.
+  // Dio
   getIt.registerLazySingleton<Dio>(
     () => Dio(
       BaseOptions(
@@ -47,7 +50,7 @@ Future<void> configureDependencies() async {
     ),
   );
 
-  // DioClient owns auth-header injection, token refresh and ApiException mapping.
+  // DioClient
   getIt.registerLazySingleton<DioClient>(
     () => DioClient(
       dio: getIt<Dio>(),
@@ -55,8 +58,7 @@ Future<void> configureDependencies() async {
     ),
   );
 
-  // --- Feature: Auth ------------------------------------------------------
-
+  // Auth
   getIt.registerLazySingleton<LoginService>(
     () => LoginService(),
   );
@@ -68,15 +70,21 @@ Future<void> configureDependencies() async {
     ),
   );
 
-  // --- Feature: Products --------------------------------------------------
-
+  // Products API datasource
   getIt.registerLazySingleton<ProductsApiDatasource>(
     () => ProductsApiDatasource(),
   );
 
-  getIt.registerLazySingleton<ProductsRepository>(
-    () => ProductsRepositoryImpl(datasource: getIt<ProductsApiDatasource>()),
+  // Products reviews local datasource (Hive)
+  getIt.registerLazySingleton<ReviewsLocalDatasource>(
+    () => ReviewsLocalDatasource(),
   );
 
-  
+  // Products repository
+  getIt.registerLazySingleton<ProductsRepository>(
+    () => ProductsRepositoryImpl(
+      datasource: getIt<ProductsApiDatasource>(),
+      reviewsLocalDatasource: getIt<ReviewsLocalDatasource>(),
+    ),
+  );
 }
